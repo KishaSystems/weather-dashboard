@@ -1,16 +1,35 @@
+import { useState } from 'react'
 import { describeWeather } from '../weatherCodes'
 
 // A "presentational" component: it just receives data via props
 // and renders it. It holds no state of its own.
 export default function WeatherCard({ place, current }) {
+  const [unit, setUnit] = useState('C')
   const { label, icon } = describeWeather(current.weather_code)
+  const temperature = unit === 'C' ? current.temperature_2m : current.temperature_2m * 9 / 5 + 32
 
   return (
     <div className="weather-card">
       <h2>{place}</h2>
       <div className="weather-card-main">
         <span className="weather-icon">{icon}</span>
-        <span className="weather-temp">{Math.round(current.temperature_2m)}°C</span>
+        <span className="weather-temp">{Math.round(temperature)}°{unit}</span>
+      </div>
+      <div className="temperature-toggle" role="group" aria-label="Temperature unit">
+        <button
+          className={unit === 'C' ? 'active' : ''}
+          onClick={() => setUnit('C')}
+          aria-pressed={unit === 'C'}
+        >
+          °C
+        </button>
+        <button
+          className={unit === 'F' ? 'active' : ''}
+          onClick={() => setUnit('F')}
+          aria-pressed={unit === 'F'}
+        >
+          °F
+        </button>
       </div>
       <p className="weather-label">{label}</p>
       <div className="weather-details">
